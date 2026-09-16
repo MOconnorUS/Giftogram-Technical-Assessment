@@ -11,8 +11,9 @@ async function registration(req, res) {
 
     const data = JSON.parse(body);
     // From here we want to check if the user's email already exists within the DB
-    // If yes return an error code saying there is already and account under that email otherwise
-    // Return success
+    // If yes return an error code saying there is already and account under that email otherwise <- can change to attempting an insert with
+    // Email as unique and if it fails we can use that for error response
+    // Return success 
 }
 
 async function login(req, res) {
