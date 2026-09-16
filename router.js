@@ -1,0 +1,2 @@
+// Going to use this to create a route table to feed to the server.
+// May be slightly overengineering the simple backend but this is how I would typically design one.
