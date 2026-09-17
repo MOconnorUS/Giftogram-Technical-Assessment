@@ -8,6 +8,7 @@ const routes = {
     "POST /register": auth.registration,
     "POST /login": auth.login,
     "POST /send_message": message.sendMessage,
+    "GET /view_messages": message.getMessages,
 }
 
 module.exports = function dispatch(req, res, parsedUrl) {

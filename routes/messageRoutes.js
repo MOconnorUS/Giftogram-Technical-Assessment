@@ -1,10 +1,37 @@
 const pool = require('../db');
 
+// NOTE: someone can use fake users/ones that have no entries and get no errors
 async function getMessages(req, res, parsedUrl) {
+    let body = "";
+    
+    for await (const chunk of req) {
+        body += chunk;
+    }
+
+    const data = JSON.parse(body);
+
     // Utilize the parsed url for the necessary user params
     // Perform a simple query to access the records where the users messages one another
     // Upon a lookup error return an error message <- shouldn't have to check if each user is valid
     // Since if one or more users are incorrect the query will fail
+
+    try {
+        const [rows] = await pool.execute(
+            "SELECT * FROM messages WHERE (sender_id = ? AND receipient_id = ?) OR (sender_id = ? AND receipient_id = ?) ORDER BY sent_timestamp ASC",
+            [data.user_id_a, data.user_id_b, data.user_id_b, data.user_id_a]
+        );
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({
+            "messages": rows
+        }))
+    } catch (err) {
+        console.log(err);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Internal Server Error" }));
+    }
+
+    return;
 }
 
 async function sendMessage(req, res) {
@@ -15,9 +42,6 @@ async function sendMessage(req, res) {
     }
 
     const data = JSON.parse(body);
-
-    // Ensure both users are valid and then make a query to add the message to the db and send a success
-    // If any error is encountered return error response
 
     try {
         [result] = await pool.execute(
@@ -52,4 +76,5 @@ async function sendMessage(req, res) {
 
 module.exports = {
     sendMessage,
+    getMessages
 }
