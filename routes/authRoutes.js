@@ -1,5 +1,11 @@
 const pool = require('../db');
 
+/**
+ * Register's a new user as long as their email is not taken.
+ *
+ * @param {http.IncomingMessage} req - Incoming request; body contains { email, password, first_name, last_name }.
+ * @param {http.ServerResponse} res - Response used to send back the user's information or an error message.
+ */
 // NOTE: should abstract the chunk processing into a neutral helper file for all
 // routes to be reusable instead of copy and pasted
 async function registration(req, res) {
@@ -43,6 +49,12 @@ async function registration(req, res) {
     return;
 }
 
+/**
+ * Verifies a user's login credentials.
+ *
+ * @param {http.IncomingMessage} req - Incoming request; body contains { email, password }.
+ * @param {http.ServerResponse} res - Response used to send back the user's information or an error message.
+ */
 async function login(req, res) {
     let body = "";
     

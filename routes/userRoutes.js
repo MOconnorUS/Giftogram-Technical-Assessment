@@ -1,5 +1,11 @@
 const pool = require('../db');
 
+/**
+ * Fetches all users id, email, first name, and last name aside from the requester's.
+ *
+ * @param {http.IncomingMessage} req - Incoming request; body contains { requester_user_id }.
+ * @param {http.ServerResponse} res - Response used to send back user information or a potential error.
+ */
 async function getAllUsers(req, res, parsedUrl) {
     let body = "";
     

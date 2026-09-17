@@ -1,5 +1,11 @@
 const pool = require('../db');
 
+/**
+ * Fetches all messages sent between two valid users.
+ *
+ * @param {http.IncomingMessage} req - Incoming request; body contains { user_id_a, user_id_b }.
+ * @param {http.ServerResponse} res - Response used to send back the messages between two users or a potential error.
+ */
 // NOTE: someone can use fake users/ones that have no entries and get no errors
 async function getMessages(req, res, parsedUrl) {
     let body = "";
@@ -34,6 +40,12 @@ async function getMessages(req, res, parsedUrl) {
     return;
 }
 
+/**
+ * Sends a message from one user to another.
+ *
+ * @param {http.IncomingMessage} req - Incoming request; body contains { sender_user_id, receiver_user_id, message }.
+ * @param {http.ServerResponse} res - Response used to send back a success message or an error message.
+ */
 async function sendMessage(req, res) {
     let body = "";
     
