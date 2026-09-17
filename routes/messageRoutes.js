@@ -1,4 +1,4 @@
-
+const pool = require('../db');
 
 async function getMessages(req, res, parsedUrl) {
     // Utilize the parsed url for the necessary user params

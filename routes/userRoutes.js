@@ -1,4 +1,4 @@
-
+const pool = require('../db');
 
 async function getAllUsers(req, res, parsedUrl) {
     // Make a simple query to return all users except the user with the id provided

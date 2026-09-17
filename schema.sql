@@ -4,7 +4,9 @@ USE giftogram_assessment_db;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(100) NOT NULL
+    password_hash VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE messages (
