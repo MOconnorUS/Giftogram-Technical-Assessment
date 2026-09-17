@@ -2,10 +2,12 @@
 // May be slightly overengineering the simple backend but this is how I would typically design one.
 
 const auth = require("./routes/authRoutes");
+const message = require("./routes/messageRoutes");
 
 const routes = {
     "POST /register": auth.registration,
     "POST /login": auth.login,
+    "POST /send_message": message.sendMessage,
 }
 
 module.exports = function dispatch(req, res, parsedUrl) {
