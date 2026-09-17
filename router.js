@@ -3,12 +3,14 @@
 
 const auth = require("./routes/authRoutes");
 const message = require("./routes/messageRoutes");
+const user = require("./routes/userRoutes");
 
 const routes = {
     "POST /register": auth.registration,
     "POST /login": auth.login,
     "POST /send_message": message.sendMessage,
     "GET /view_messages": message.getMessages,
+    "GET /list_all_users": user.getAllUsers,
 }
 
 module.exports = function dispatch(req, res, parsedUrl) {

@@ -10,11 +10,6 @@ async function getMessages(req, res, parsedUrl) {
 
     const data = JSON.parse(body);
 
-    // Utilize the parsed url for the necessary user params
-    // Perform a simple query to access the records where the users messages one another
-    // Upon a lookup error return an error message <- shouldn't have to check if each user is valid
-    // Since if one or more users are incorrect the query will fail
-
     try {
         const [rows] = await pool.execute(
             "SELECT * FROM messages WHERE (sender_id = ? AND receipient_id = ?) OR (sender_id = ? AND receipient_id = ?) ORDER BY sent_timestamp ASC",
