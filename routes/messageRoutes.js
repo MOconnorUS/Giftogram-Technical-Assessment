@@ -12,7 +12,12 @@ async function getMessages(req, res, parsedUrl) {
 
     try {
         const [rows] = await pool.execute(
-            "SELECT * FROM messages WHERE (sender_id = ? AND receipient_id = ?) OR (sender_id = ? AND receipient_id = ?) ORDER BY sent_timestamp ASC",
+            `
+            SELECT * FROM messages 
+            WHERE (sender_id = ? AND recipient_id = ?) OR 
+            (sender_id = ? AND recipient_id = ?) 
+            ORDER BY sent_timestamp ASC
+            `,
             [data.user_id_a, data.user_id_b, data.user_id_b, data.user_id_a]
         );
 
@@ -40,7 +45,7 @@ async function sendMessage(req, res) {
 
     try {
         [result] = await pool.execute(
-            "INSERT INTO messages (sender_id, receipient_id, body) VALUES (?, ?, ?)",
+            "INSERT INTO messages (sender_id, recipient_id, body) VALUES (?, ?, ?)",
             [data.sender_user_id, data.receiver_user_id, data.message]
         );
 

@@ -12,7 +12,7 @@ async function getAllUsers(req, res, parsedUrl) {
     try {
         const [rows] = await pool.execute(
             `
-            SELECT id, user_email, first_name, last_name FROM users 
+            SELECT id, email, first_name, last_name FROM users 
             WHERE id != ?
             `,
             [data.requester_user_id]

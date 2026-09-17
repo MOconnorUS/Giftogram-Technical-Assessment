@@ -13,7 +13,7 @@ async function registration(req, res) {
 
     try {
         const [result] = await pool.execute(
-            "INSERT INTO users (user_email, password_hash, first_name, last_name) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (email, password_hash, first_name, last_name) VALUES (?, ?, ?, ?)",
             [data.email, data.password, data.first_name, data.last_name]
         );
 
@@ -54,7 +54,7 @@ async function login(req, res) {
 
     try {
         const [rows] = await pool.execute(
-            "SELECT * FROM users WHERE user_email = ?",
+            "SELECT * FROM users WHERE email = ?",
             [data.email]
         );
         
