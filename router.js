@@ -5,6 +5,7 @@ const auth = require("./routes/authRoutes");
 
 const routes = {
     "POST /register": auth.registration,
+    "POST /login": auth.login,
 }
 
 module.exports = function dispatch(req, res, parsedUrl) {

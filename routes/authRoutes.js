@@ -10,10 +10,6 @@ async function registration(req, res) {
     }
 
     const data = JSON.parse(body);
-    // From here we want to check if the user's email already exists within the DB
-    // If yes return an error code saying there is already and account under that email otherwise <- can change to attempting an insert with
-    // Email as unique and if it fails we can use that for error response
-    // Return success 
 
     try {
         const [result] = await pool.execute(
@@ -43,6 +39,8 @@ async function registration(req, res) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Internal Server Error" }))
     }
+
+    return;
 }
 
 async function login(req, res) {
@@ -53,12 +51,50 @@ async function login(req, res) {
     }
 
     const data = JSON.parse(body);
-    // From here we want to check the login information, email + pw, against the DB
-    // If valid then we return success otherwise some sort of error based on the issue
-    // Incorrect email => make an account
-    // Incorrect pw but correct email => incorrect pw please try again
+
+    try {
+        const [rows] = await pool.execute(
+            "SELECT * FROM users WHERE user_email = ?",
+            [data.email]
+        );
+        
+        if (rows.length == 0) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                "error_code": 404,
+                "error_title": "Not Found",
+                "error_message": "No account found with the given email. Please make an account and try again."
+            }));
+            return;
+        }
+        
+        if (rows[0].password_hash !== data.password) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                "error_code": 400,
+                "error_title": "Incorrect Password",
+                "error_message": "Incorrect password provided. Please try again."
+            }));
+            return;
+        }
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({
+            "user_id": rows[0].id,
+            "email": rows[0].email,
+            "first_name": rows[0].first_name,
+            "last_name": rows[0].last_name
+        }))
+    } catch (err) {
+        console.log(err);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Internal Server Error" }));
+    }
+
+    return;
 }
 
 module.exports = {
     registration,
+    login
 }
