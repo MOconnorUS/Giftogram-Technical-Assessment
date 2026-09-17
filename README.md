@@ -1,15 +1,15 @@
 # Giftogram-Technical-Assessment
 
-# Name
-## Matthew O'Connor
+## Name
+Matthew O'Connor
 
-# How long it took for me to complete the assessment
-## Coding: 4 hours
-## Documentation & Clean up: 30 minutes
-## Writing the README: ~30 minutes
-## Overall: ~5 hours
+## How long it took for me to complete the assessment
+Coding: 4 hours
+Documentation & Clean up: 30 minutes
+Writing the README: ~30 minutes
+Overall: ~5 hours
 
-# Summary of my steps
+## Summary of my steps
 1. When I started this assessment I approached it how I would any problem. I identified what I was going to use which in this case was a very simple NodeJs backend using the free installation of MySQL Server.
 2. After everything was installed I moved to architecting the initial design of how I wanted to file system to be laid out to handle the task at hand. This may seem a bit unconventional but for me it serves as a mental model when I don't have a paper and pen by me to break down the different pieces of a project and organize its functionality accordingly. One thing to note is that I do iterate on this initial architecture, it is by no means set in stone.
 3. I initialized the project via npm init -y, creating my .gitignore, and adding things like my .env and node_modules to my .gitignore.
@@ -22,15 +22,15 @@
 10. As I documented things I noticed some spelling mistakes and some more clean up I could do. So, I made a helper function for my POST routes and I noticed I was using body's on my GET routes which they are not supposed to have.
 11. After I finished my clean up and I fixed my GET routes I performed a final test of everything and made sure the latest updates were pushed so I could wrap up the project.
 
-# Issues with the endpoint structure
+## Issues with the endpoint structure
 1. The endpoints regarding registering and logging in seemed to be very lacking in security measures from two angles. First, there is nothing stopping something from performing SQL injections, breaking in by inputting an absurdly long password, or entering some other malicious input. Second, there is nothing ensuring the user is as protected as they should be. There is no enforcement on the user's password regarding the length, characters, and capitalization. Also, someone can attempt this login as many times as their heart desires until they break into someones account.
 2. There is no protection from someone querying all the messages in a conversation between two people. This would lead to a huge privacy issue.
 3. There is nothing preventing someone from querying every single person and their account information. The list_all_users endpoint isn't protected by any tokens, authentication, etc.
 4. The project itself doesn't state that there needs to be anything unique at all about a user's account. I took it upon myself to make the user's email unique so a single email couldn't make an infinite number of accounts. But, with how the register endpoint is described it doesn't seem to list that as a requirement which would allow a malicious actor to make tons of accounts.
 5. There seems to be no form of rate limiting anywhere. Granted the endpoints are fairly lightweight it would still be a good idea to consider putting rate limiting in to prevent malicious actors from spamming one or more endpoints.
 
-# Suggested improvements
-## Security
+## Suggested improvements
+**Security**
 1. There needs to be required projection against SQL injections or any other sort of malicious input for any endpoint that eventually touches the database via anything other than a GET.
 2. There needs to be a requirement for the users password to be more sophisticated by including unique characters, a minimum length, capitalization, numbers, etc.
 3. There needs to be some sort of authorization requirement to access messages between two users.
@@ -38,11 +38,11 @@
 5. There needs to be a maximum number of password attempts per session and then the user either has to try after a wait period or their account gets locked.
 6. Rate limiting should be considered especially for a messaging platform as you don't want downtime.
 
-## Usability
+**Usability**
 1. There needs to be something unique about a user, ideally their email.
 2. There needs to be a forgot password endpoint otherwise a user can never reset their password to login if they forget their password.
 
-## API Design
+**API Design**
 1. I would start by ensuring inputs are sanitized from the requests because you should never trust information from the frontend. 
 2. I would add the necessary changes to creating a password as mentioned in security improvements (special characters, minimum length, capitalizations, etc.).
 3. I would add a maximum amount of login attempts and depending on the type of service this login gives access to I would either lock the account or time out any tries.
