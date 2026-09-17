@@ -1,4 +1,5 @@
 const pool = require('../db');
+const { parseBody } = require('./routeHelper');
 
 /**
  * Register's a new user as long as their email is not taken.
@@ -9,13 +10,20 @@ const pool = require('../db');
 // NOTE: should abstract the chunk processing into a neutral helper file for all
 // routes to be reusable instead of copy and pasted
 async function registration(req, res) {
-    let body = "";
-    
-    for await (const chunk of req) {
-        body += chunk;
-    }
+    let data;
 
-    const data = JSON.parse(body);
+    try {
+        data = await parseBody(req);
+    } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+            "error_code": 400,
+            "error_title": "Invalid JSON",
+            "error_message": "Malformed JSON in the request."
+         }));
+
+        return;
+    }
 
     try {
         const [result] = await pool.execute(
@@ -56,13 +64,20 @@ async function registration(req, res) {
  * @param {http.ServerResponse} res - Response used to send back the user's information or an error message.
  */
 async function login(req, res) {
-    let body = "";
-    
-    for await (const chunk of req) {
-        body += chunk;
-    }
+    let data;
 
-    const data = JSON.parse(body);
+    try {
+        data = await parseBody(req);
+    } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+            "error_code": 400,
+            "error_title": "Invalid JSON",
+            "error_message": "Malformed JSON in the request."
+         }));
+         
+        return;
+    }
 
     try {
         const [rows] = await pool.execute(
@@ -96,7 +111,7 @@ async function login(req, res) {
             "email": rows[0].email,
             "first_name": rows[0].first_name,
             "last_name": rows[0].last_name
-        }))
+        }));
     } catch (err) {
         console.log(err);
         res.writeHead(500, { "Content-Type": "application/json" });

@@ -7,13 +7,7 @@ const pool = require('../db');
  * @param {http.ServerResponse} res - Response used to send back user information or a potential error.
  */
 async function getAllUsers(req, res, parsedUrl) {
-    let body = "";
-    
-    for await (const chunk of req) {
-        body += chunk;
-    }
-
-    const data = JSON.parse(body);
+    const requesterUserId = parsedUrl.query.requester_user_id;
 
     try {
         const [rows] = await pool.execute(
@@ -21,7 +15,7 @@ async function getAllUsers(req, res, parsedUrl) {
             SELECT id, email, first_name, last_name FROM users 
             WHERE id != ?
             `,
-            [data.requester_user_id]
+            [requesterUserId]
         );
 
         res.writeHead(200, { "Content-Type": "application/json" });

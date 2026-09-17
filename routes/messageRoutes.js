@@ -1,4 +1,5 @@
 const pool = require('../db');
+const { parseBody } = require("./routeHelper");
 
 /**
  * Fetches all messages sent between two valid users.
@@ -8,13 +9,8 @@ const pool = require('../db');
  */
 // NOTE: someone can use fake users/ones that have no entries and get no errors
 async function getMessages(req, res, parsedUrl) {
-    let body = "";
-    
-    for await (const chunk of req) {
-        body += chunk;
-    }
-
-    const data = JSON.parse(body);
+    const userIdA = parsedUrl.query.user_id_a;
+    const userIdB = parsedUrl.query.user_id_b;
 
     try {
         const [rows] = await pool.execute(
@@ -24,13 +20,13 @@ async function getMessages(req, res, parsedUrl) {
             (sender_id = ? AND recipient_id = ?) 
             ORDER BY sent_timestamp ASC
             `,
-            [data.user_id_a, data.user_id_b, data.user_id_b, data.user_id_a]
+            [userIdA, userIdB, userIdB, userIdA]
         );
 
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({
             "messages": rows
-        }))
+        }));
     } catch (err) {
         console.log(err);
         res.writeHead(500, { "Content-Type": "application/json" });
@@ -47,13 +43,20 @@ async function getMessages(req, res, parsedUrl) {
  * @param {http.ServerResponse} res - Response used to send back a success message or an error message.
  */
 async function sendMessage(req, res) {
-    let body = "";
-    
-    for await (const chunk of req) {
-        body += chunk;
-    }
+    let data;
 
-    const data = JSON.parse(body);
+    try {
+        data = await parseBody(req);
+    } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+            "error_code": 400,
+            "error_title": "Invalid JSON",
+            "error_message": "Malformed JSON in the request."
+         }));
+         
+        return;
+    }
 
     try {
         [result] = await pool.execute(
